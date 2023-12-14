@@ -1,0 +1,12 @@
+{
+    "cSpell.words": [
+        "autoflush",
+        "dotenv",
+        "fastapi",
+        "onupdate",
+        "pydantic",
+        "pymysql",
+        "sessionmaker",
+        "sqlalchemy"
+    ]
+}
