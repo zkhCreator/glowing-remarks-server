@@ -1,13 +1,10 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Text
 
 from common.db_model import BaseModel
 
-Base = declarative_base()
-
-class AssistantModel(BaseModel):
+class AssistantDBModel(BaseModel):
     __tablename__ = 'assistant'
 
-    title = Column(String, index=True)
-    model = Column(String, index=True)
-    prompt = Column(String, index=True, nullable=True)
+    title = Column(String(255))
+    model = Column(String(255))
+    prompt = Column(Text, nullable=True)

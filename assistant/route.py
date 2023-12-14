@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from .models import Assistant
 from common.database import get_db
-from .db_models import AssistantModel
+from .db_models import AssistantDBModel
 from uuid import UUID
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
@@ -17,12 +17,17 @@ def create_assistant(assistant: Assistant, db: Session = Depends(get_db)):
 
 @router.get("/{assistant_id}")
 def read_assistant(assistant_id: UUID, db: Session = Depends(get_db)):
-    assistant = db.query(AssistantModel).filter(AssistantModel.id == assistant_id).first()
-    return assistant
+    assistant = db.query(AssistantDBModel).filter(AssistantDBModel.id == assistant_id).first()
+    
+    assistant_model = Assistant.from_orm(assistant)
+    assistant_model.createTime = assistant.createTime
+    assistant_model.updateTime = assistant.updateTime
+    
+    return assistant_model
 
 @router.put("/{assistant_id}")
 def update_assistant(assistant_id: UUID, assistant: Assistant, db: Session = Depends(get_db)):
-    db_assistant = db.query(AssistantModel).filter(AssistantModel.id == assistant_id).first()
+    db_assistant = db.query(AssistantDBModel).filter(AssistantDBModel.id == assistant_id).first()
     for key, value in assistant.model_dump(exclude_unset=True).items():
         setattr(db_assistant, key, value)
     db.commit()
@@ -30,6 +35,6 @@ def update_assistant(assistant_id: UUID, assistant: Assistant, db: Session = Dep
 
 @router.delete("/{assistant_id}")
 def delete_assistant(assistant_id: UUID, db: Session = Depends(get_db)):
-    db.query(AssistantModel).filter(AssistantModel.id == assistant_id).delete()
+    db.query(AssistantDBModel).filter(AssistantDBModel.id == assistant_id).delete()
     db.commit()
     return {"message": "Assistant deleted"}
