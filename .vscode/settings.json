@@ -9,6 +9,7 @@
         "sessionmaker",
         "sqlalchemy",
         "starlette",
+        "UUIDID",
         "uvicorn"
     ]
 }

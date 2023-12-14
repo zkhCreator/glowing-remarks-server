@@ -1,20 +1,16 @@
 from typing import Any, Dict, Union
 from fastapi import FastAPI
-from common.database import startup, shutdown
+from common.database import on_startup
 from assistant.route import router as assistant_router
+from auth.route import router as auth_router
 import uvicorn
-import auth0
-from pydantic import BaseModel
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI()
 
-app.add_event_handler("startup", startup)
-app.add_event_handler("shutdown", shutdown)
+app.add_event_handler("startup", on_startup)
 
 app.include_router(assistant_router)
+app.include_router(auth_router)
 
 @app.get("/")
 def read_root():

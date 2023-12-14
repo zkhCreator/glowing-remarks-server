@@ -2,12 +2,16 @@ from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
 
 from sqlalchemy import create_engine
 
 load_dotenv()
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    pass
 
 
 DB_USER = os.getenv("DB_USER")
@@ -15,19 +19,17 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
 
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+DATABASE_URL = f"mysql+aiomysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
-engine = create_engine(DATABASE_URL)
+engine = create_async_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-async def startup():
-    Base.metadata.create_all(bind=engine)
-    pass
+async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 
-async def shutdown():
-    pass
-
+async def on_startup():
+    # Not needed if you setup a migration system like Alembic
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 def get_db():
     db = SessionLocal()
