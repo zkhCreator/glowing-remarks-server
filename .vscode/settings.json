@@ -7,6 +7,8 @@
         "pydantic",
         "pymysql",
         "sessionmaker",
-        "sqlalchemy"
+        "sqlalchemy",
+        "starlette",
+        "uvicorn"
     ]
 }

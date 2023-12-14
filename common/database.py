@@ -1,5 +1,4 @@
 from sqlalchemy.orm import sessionmaker
-from databases import Database
 from dotenv import load_dotenv
 import os
 from sqlalchemy.ext.declarative import declarative_base
@@ -18,17 +17,16 @@ DB_NAME = os.getenv("DB_NAME")
 
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
-database = Database(DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 async def startup():
     Base.metadata.create_all(bind=engine)
-    await database.connect()
+    pass
 
 
 async def shutdown():
-    await database.disconnect()
+    pass
 
 
 def get_db():
