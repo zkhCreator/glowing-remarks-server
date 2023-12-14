@@ -14,7 +14,7 @@ class BaseModel(Base):
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
-            if key == 'id':
+            if key.lower() == 'id':
                 continue  # Skip the 'id' field
             if hasattr(self, key):
                 setattr(self, key, value)

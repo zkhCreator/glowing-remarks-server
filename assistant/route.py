@@ -28,8 +28,7 @@ def read_assistant(assistant_id: UUID, db: Session = Depends(get_db)):
 @router.put("/{assistant_id}")
 def update_assistant(assistant_id: UUID, assistant: Assistant, db: Session = Depends(get_db)):
     db_assistant = db.query(AssistantDBModel).filter(AssistantDBModel.id == assistant_id).first()
-    for key, value in assistant.model_dump(exclude_unset=True).items():
-        setattr(db_assistant, key, value)
+    db_assistant.update(**assistant.model_dump(exclude_unset=True))
     db.commit()
     return db_assistant
 
