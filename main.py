@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 from fastapi import FastAPI
 from common.database import on_startup
-from assistant.route import router as assistant_router
+from assistant.assistant.route import router as assistant_router
 from auth.route import router as auth_router
 import uvicorn
 
@@ -15,12 +15,6 @@ app.include_router(auth_router)
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-# @app.post("/users")
-# def create_user(user: Dict[Any, Any]):
-#     logging.debug("-------")
-#     logging.debug(user)
-#     return {"hello": "world"}
 
 if __name__ == "__main__":
     uvicorn.run(

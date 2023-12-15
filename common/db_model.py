@@ -5,12 +5,16 @@ import uuid
 
 from common.database import Base
 
-class BaseModel(Base):
+class EditableDBBaseModel(Base):
+    __abstract__ = True
+
+    createTime = Column(DateTime(timezone=True), server_default=func.now())
+    updateTime = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+class BaseDBModel(EditableDBBaseModel):
     __abstract__ = True
 
     id = Column(UUIDType(binary=False), primary_key=True, default=uuid.uuid4)
-    createTime = Column(DateTime(timezone=True), server_default=func.now())
-    updateTime = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
@@ -18,3 +22,4 @@ class BaseModel(Base):
                 continue  # Skip the 'id' field
             if hasattr(self, key):
                 setattr(self, key, value)
+            

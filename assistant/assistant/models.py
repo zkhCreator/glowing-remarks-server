@@ -1,19 +1,16 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 from typing import Optional
 from uuid import UUID
+
+from common.model import CommonBaseModel
 from .db_models import AssistantDBModel
 from datetime import datetime
 
 
-class Assistant(BaseModel):
-    id: Optional[UUID] = None
+class Assistant(CommonBaseModel):
     title: str
     model: str
     prompt: Optional[str] = None
-    createTime: datetime = Field(
-        default_factory=datetime.utcnow, alias='createTime', read_only=True)
-    updateTime: datetime = Field(
-        default_factory=datetime.utcnow, alias='updateTime', read_only=True)
 
     @classmethod
     def from_orm(cls, assistant_model: AssistantDBModel):

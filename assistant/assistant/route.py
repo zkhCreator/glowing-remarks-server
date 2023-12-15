@@ -1,24 +1,37 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException, status
+from assistant.user_assistant.db_model import UserAssistantDBModel
 
-from assistant.dependency import get_assistant
+from auth.db_models import User
+
+from .dependency import get_assistant
 from .models import Assistant
-from common.database import get_async_session, get_db
+from common.database import get_async_session
 from .db_models import AssistantDBModel
-from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select, delete
-from sqlalchemy import update
+from auth.users import current_active_user
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
 
 
 @router.post("/")
-async def create_assistant(assistant: Assistant, db: AsyncSession = Depends(get_async_session)):
+async def create_assistant(assistant: Assistant, user: User = Depends(current_active_user), db: AsyncSession = Depends(get_async_session)):
     db_assistant = assistant.to_orm()
+
     db.add(db_assistant)
     await db.commit()
     await db.refresh(db_assistant)
+
+    try:
+        user_assistant = UserAssistantDBModel(
+            user_id=user.id, assistant_id=db_assistant.id)
+        db.add(user_assistant)
+        await db.commit()
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
     return db_assistant
 
 
@@ -41,6 +54,7 @@ async def update_assistant(assistant: Assistant, assistant_db: AssistantDBModel 
     db_assistant = result.scalars().first()
 
     return db_assistant
+
 
 @router.delete("/{assistant_id}")
 async def delete_assistant(assistant_db: AssistantDBModel = Depends(get_assistant), db: AsyncSession = Depends(get_async_session)):

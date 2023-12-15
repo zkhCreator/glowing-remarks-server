@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, Text
 
-from common.db_model import BaseModel
+from common.db_model import BaseDBModel
 
-class AssistantDBModel(BaseModel):
+class AssistantDBModel(BaseDBModel):
     __tablename__ = 'assistant'
 
     title = Column(String(255))
