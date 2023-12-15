@@ -5,15 +5,11 @@ from pydantic import BaseModel, Field
 
 
 class EditableBaseModel(BaseModel):
-    createTime: datetime = Field(
-        default_factory=datetime.utcnow, alias='createTime', read_only=True)
-    updateTime: datetime = Field(
-        default_factory=datetime.utcnow, alias='updateTime', read_only=True)
+    create_time: datetime = Field(
+        default_factory=datetime.utcnow, alias='create_time', read_only=True)
+    update_time: datetime = Field(
+        default_factory=datetime.utcnow, alias='update_time', read_only=True)
 
 
 class CommonBaseModel(EditableBaseModel):
     id: Optional[UUID] = None
-    createTime: datetime = Field(
-        default_factory=datetime.utcnow, alias='createTime', read_only=True)
-    updateTime: datetime = Field(
-        default_factory=datetime.utcnow, alias='updateTime', read_only=True)

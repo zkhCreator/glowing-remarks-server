@@ -1,11 +1,16 @@
-from typing import Any, Dict, Union
-from fastapi import FastAPI
+import logging
+from fastapi import APIRouter, FastAPI
 from common.database import on_startup
-from assistant.assistant.route import router as assistant_router
+from assistant.route import router as assistant_router
 from auth.route import router as auth_router
 import uvicorn
 
 app = FastAPI()
+
+# 启用 SQLAlchemy 的日志记录
+# logging.basicConfig()
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
 
 app.add_event_handler("startup", on_startup)
 

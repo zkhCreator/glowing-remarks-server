@@ -1,20 +1,30 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from assistant.user_assistant.db_model import UserAssistantDBModel
+from assistant.user_assistant.list import assistant_list
 
 from auth.db_models import User
+from common.pagination import PaginationModel
 
-from .dependency import get_assistant
-from .models import Assistant
+from .assistant.dependency import get_assistant
+from .assistant.models import Assistant
 from common.database import get_async_session
-from .db_models import AssistantDBModel
+from .assistant.db_models import AssistantDBModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select, delete
 from auth.users import current_active_user
+from fastapi.logger import logger
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
 
+@router.get("/list")
+async def list(page_num: int = Query(0, alias="page_num"), 
+               page_size: int = Query(20, alias="page_size"), 
+               user: User = Depends(current_active_user), 
+               db: AsyncSession = Depends(get_async_session)):
+    pagination = PaginationModel(page_num=page_num, page_size=page_size)
+    return await assistant_list(pagination=pagination, user=user, db=db)
 
-@router.post("/")
+@router.post("/create")
 async def create_assistant(assistant: Assistant, user: User = Depends(current_active_user), db: AsyncSession = Depends(get_async_session)):
     db_assistant = assistant.to_orm()
 
@@ -34,17 +44,15 @@ async def create_assistant(assistant: Assistant, user: User = Depends(current_ac
 
     return db_assistant
 
-
-@router.get("/{assistant_id}")
+@router.get("/detail/{assistant_id}")
 async def read_assistant(assistant: AssistantDBModel = Depends(get_assistant)):
     assistant_model = Assistant.from_orm(assistant)
-    assistant_model.createTime = assistant.createTime
-    assistant_model.updateTime = assistant.updateTime
+    assistant_model.create_time = assistant.create_time
+    assistant_model.update_time = assistant.update_time
 
     return assistant_model
 
-
-@router.put("/{assistant_id}")
+@router.put("/update/{assistant_id}")
 async def update_assistant(assistant: Assistant, assistant_db: AssistantDBModel = Depends(get_assistant), db: AsyncSession = Depends(get_async_session)):
     assistant_db.update(**assistant.model_dump(exclude_unset=True))
     await db.commit()
@@ -56,7 +64,7 @@ async def update_assistant(assistant: Assistant, assistant_db: AssistantDBModel 
     return db_assistant
 
 
-@router.delete("/{assistant_id}")
+@router.delete("/update/{assistant_id}")
 async def delete_assistant(assistant_db: AssistantDBModel = Depends(get_assistant), db: AsyncSession = Depends(get_async_session)):
     await db.execute(
         delete(AssistantDBModel).
@@ -64,3 +72,6 @@ async def delete_assistant(assistant_db: AssistantDBModel = Depends(get_assistan
     )
     await db.commit()
     return {"message": "Assistant deleted"}
+
+
+

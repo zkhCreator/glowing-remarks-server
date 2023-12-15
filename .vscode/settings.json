@@ -4,6 +4,7 @@
         "autoflush",
         "dotenv",
         "fastapi",
+        "levelname",
         "onupdate",
         "pydantic",
         "pymysql",

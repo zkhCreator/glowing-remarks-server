@@ -4,6 +4,8 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+from assistant.user_assistant.db_model import UserAssistantDBModel
+from auth.db_models import User
 from common.setting import settings
 from assistant.assistant.db_models import AssistantDBModel
 

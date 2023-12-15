@@ -8,4 +8,4 @@ class AssistantDBModel(BaseDBModel):
     title = Column(String(255))
     model = Column(String(255))
     prompt = Column(Text, nullable=True)
-    basic_language = Column(String(255), nullable=True, default="zh-cn")
+    # basic_language = Column(String(255), nullable=True, default="zh-cn") 

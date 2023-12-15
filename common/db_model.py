@@ -8,8 +8,8 @@ from common.database import Base
 class EditableDBBaseModel(Base):
     __abstract__ = True
 
-    createTime = Column(DateTime(timezone=True), server_default=func.now())
-    updateTime = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    create_time = Column(DateTime(timezone=True), server_default=func.now())
+    update_time = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 class BaseDBModel(EditableDBBaseModel):
     __abstract__ = True

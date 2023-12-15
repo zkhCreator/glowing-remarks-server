@@ -9,7 +9,7 @@ from auth.users import current_active_user
 from assistant.user_assistant.db_model import UserAssistantDBModel
 from sqlalchemy.sql import exists
 
-async def get_assistant(assistant_id: UUID, user: User = Depends(current_active_user), db: AsyncSession = Depends(get_async_session)) -> AssistantDBModel:
+async def get_assistant(assistant_id: UUID, user: User = Depends(current_active_user), db: AsyncSession = Depends(get_async_session)):
     user_assistant_exists = await db.execute(
         select(exists().where(UserAssistantDBModel.user_id == user.id).where(UserAssistantDBModel.assistant_id == assistant_id))
     )

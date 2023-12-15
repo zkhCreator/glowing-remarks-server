@@ -11,7 +11,7 @@ class Assistant(CommonBaseModel):
     title: str
     model: str
     prompt: Optional[str] = None
-    basic_language: Optional[str] = None
+    # basic_language: Optional[str] = None
 
     @classmethod
     def from_orm(cls, assistant_model: AssistantDBModel):

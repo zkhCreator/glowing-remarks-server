@@ -1,12 +1,11 @@
 from typing import Optional
 from assistant.assistant.db_models import AssistantDBModel
 
-from common.model import CommonBaseModel
+from common.model import EditableBaseModel
 
-class UserAssistant(CommonBaseModel):
-    title: str
-    model: str
-    prompt: Optional[str] = None
+class UserAssistant(EditableBaseModel):
+    user_id: str
+    assistant_id: str
 
     @classmethod
     def from_orm(cls, assistant_model: AssistantDBModel):
