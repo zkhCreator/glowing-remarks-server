@@ -1,5 +1,5 @@
 from jose import jwt
-from fastapi import Depends, HTTPException, Security
+from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from starlette.status import HTTP_403_FORBIDDEN
 

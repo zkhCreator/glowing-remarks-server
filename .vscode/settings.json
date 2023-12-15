@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "aiomysql",
         "autoflush",
         "dotenv",
         "fastapi",
