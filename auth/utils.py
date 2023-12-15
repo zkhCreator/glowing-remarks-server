@@ -11,6 +11,7 @@ from common.database import async_session_maker
 from fastapi_users.authentication import (
     BearerTransport,
 )
+from common.setting import settings
 
 credentials_exception = HTTPException(
     status_code=401,
@@ -23,12 +24,12 @@ oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl="/auth/authorize"
                                               )
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
-SECRET = "SECRET"
+SECRET = settings.SECRET_KEY
 
 
 def authenticate_user(token: str = Depends(oauth2_scheme)):
     try:
-        payload = jwt.decode(token, "YOUR_SECRET_KEY", algorithms=["HS256"])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
