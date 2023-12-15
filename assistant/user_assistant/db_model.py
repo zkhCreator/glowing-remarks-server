@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Text
-from common.database import Base
+from sqlalchemy import Column
 from sqlalchemy_utils import UUIDType
 
 from common.db_model import EditableDBBaseModel

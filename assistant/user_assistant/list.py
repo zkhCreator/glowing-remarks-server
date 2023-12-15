@@ -2,7 +2,6 @@
 from assistant.assistant.db_models import AssistantDBModel
 from assistant.assistant.models import Assistant
 from assistant.user_assistant.db_model import UserAssistantDBModel
-from assistant.user_assistant.models import UserAssistant
 
 from auth.db_models import User
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,16 +10,12 @@ from sqlalchemy.engine import Result
 
 from common.pagination import PaginationListResponse, PaginationModel
 from sqlalchemy import desc
-from fastapi.logger import logger
-from sqlalchemy.dialects import mysql
 
 
 async def assistant_list(user: User,  db: AsyncSession, pagination: PaginationModel):
     # Query for the ids of the UserAssistant objects
     result = await db.execute(select(UserAssistantDBModel.assistant_id).where(UserAssistantDBModel.user_id == user.id))
     user_assistant_ids = result.scalars().all()
-
-    logger.warning(f"Function assistant_list called: {user_assistant_ids}")
 
     stmt = select(AssistantDBModel).where(AssistantDBModel.id.in_(user_assistant_ids)).order_by(desc(
         AssistantDBModel.update_time)).limit(pagination.page_size).offset((pagination.page_num) * pagination.page_size)

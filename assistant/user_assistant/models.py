@@ -1,4 +1,3 @@
-from typing import Optional
 from assistant.assistant.db_models import AssistantDBModel
 
 from common.model import EditableBaseModel
