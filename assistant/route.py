@@ -44,7 +44,7 @@ async def create_assistant(assistant: Assistant, user: User = Depends(current_ac
 
     return db_assistant
 
-@router.get("/detail/{assistant_id}")
+@router.get("/detail")
 async def read_assistant(assistant: AssistantDBModel = Depends(get_assistant)):
     assistant_model = Assistant.from_orm(assistant)
     assistant_model.create_time = assistant.create_time
@@ -52,7 +52,7 @@ async def read_assistant(assistant: AssistantDBModel = Depends(get_assistant)):
 
     return assistant_model
 
-@router.put("/update/{assistant_id}")
+@router.put("/update")
 async def update_assistant(assistant: Assistant, assistant_db: AssistantDBModel = Depends(get_assistant), db: AsyncSession = Depends(get_async_session)):
     assistant_db.update(**assistant.model_dump(exclude_unset=True))
     await db.commit()
@@ -64,7 +64,7 @@ async def update_assistant(assistant: Assistant, assistant_db: AssistantDBModel 
     return db_assistant
 
 
-@router.delete("/update/{assistant_id}")
+@router.delete("/update")
 async def delete_assistant(assistant_db: AssistantDBModel = Depends(get_assistant), db: AsyncSession = Depends(get_async_session)):
     await db.execute(
         delete(AssistantDBModel).

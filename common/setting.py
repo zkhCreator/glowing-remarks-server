@@ -8,9 +8,10 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_NAME: str
     SECRET_KEY: str
+    OPENAI_API_KEY: str
 
     @classmethod
-    @validator("DB_USER", "DB_HOST", "DB_NAME", "SECRET_KEY")
+    @validator("DB_USER", "DB_HOST", "DB_NAME", "SECRET_KEY", "OPENAI_API_KEY")
     def check_not_empty(cls, v):
         assert v != "", f"{v} is not defined"
         return v
