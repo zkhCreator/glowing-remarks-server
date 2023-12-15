@@ -3,7 +3,7 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
 
 from fastapi import Depends
-from auth.utils import get_async_session
+from common.database import get_async_session
 
 from common.database import Base
 from fastapi_users.db import SQLAlchemyUserDatabase

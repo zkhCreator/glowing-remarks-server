@@ -40,6 +40,3 @@ def authenticate_user(token: str = Depends(oauth2_scheme)):
         )
 
 
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
-        yield session
