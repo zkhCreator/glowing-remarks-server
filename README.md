@@ -1,4 +1,4 @@
-# Glowing Remarks server
+# Digital Assistant server
 
 ## Installation
 

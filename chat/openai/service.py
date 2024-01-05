@@ -11,12 +11,12 @@ client = AsyncOpenAI(
 
 class OpenAIService():
     @staticmethod
-    async def assistant_create():
+    async def assistant_create(name: str, instructions: str, model: str="gpt-4-1106-preview", tools: list = [{"type": "code_interpreter"}]):
         response = await client.beta.assistants.create(
-            name="Math Tutor",
-            instructions="You are a personal math tutor. Write and run code to answer math questions.",
-            tools=[{"type": "code_interpreter"}],
-            model="gpt-4-1106-preview"
+            name,
+            instructions,
+            model,
+            tools=tools
         )
 
         return response.id
@@ -47,7 +47,7 @@ class OpenAIService():
             instructions=instruction
         )
         return run.id
-    
+
     @staticmethod
     async def run_retrieve(run_id: str, thread_id: str):
         response = await client.beta.threads.runs.retrieve(run_id, thread_id)
