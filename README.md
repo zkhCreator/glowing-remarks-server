@@ -30,3 +30,7 @@ alembic downgrade -1
 1. Open AI Assistant reflect to feature type
 2. Open AI Thread reflect to user config
 3. Open AI run reflect to user received message
+
+
+start note:
+`brew services start postgresql@15`

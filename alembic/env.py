@@ -18,7 +18,7 @@ DB_PASSWORD = settings.DB_PASSWORD
 DB_HOST = settings.DB_HOST
 DB_NAME = settings.DB_NAME
 
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
 config.set_main_option('sqlalchemy.url', DATABASE_URL)
 
