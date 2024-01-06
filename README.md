@@ -34,3 +34,14 @@ alembic downgrade -1
 
 start note:
 `brew services start postgresql@15`
+
+### Target
+
+- [ ]增加聊天的能力
+    - [ ] 增加 2 层的能力，一定用户定义，一层表达。
+    - [ ] 数据结构
+        - [ ] 
+- [ ]在聊天的基础上，增加 views 生成的能力
+- [ ]在 views 的基础上，chat 对于 view 的关联能力。
+- [ ]测试 gpt4 对于意图的理解，gpt3.5 对于数据的解析能力
+- [ ]建立 benchmark 能力
