@@ -12,6 +12,7 @@
         "sessionmaker",
         "sqlalchemy",
         "starlette",
+        "tiktoken",
         "UUIDID",
         "uvicorn"
     ]
