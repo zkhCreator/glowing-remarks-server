@@ -5,8 +5,8 @@ from sqlalchemy_utils import UUIDType
 from sqlalchemy.dialects.mysql import TEXT
 
 
-class ChatSessionMessageDBModel(BaseDBModel):
-    __tablename__ = 'chat_session_message'
+class SessionMessageDBModel(BaseDBModel):
+    __tablename__ = 'session_message'
 
     session_id = Column(UUIDType(binary=False), index=True)
     role = Column(Column(String(255), nullable=False))

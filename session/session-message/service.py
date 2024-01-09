@@ -3,15 +3,15 @@ from uuid import UUID
 from sqlalchemy import and_, select
 
 from common.pagination import PaginationModel
-from .model import ChatSessionMessageModel
+from .model import SessionMessageModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from .db_model import ChatSessionMessageDBModel
+from .db_model import SessionMessageDBModel
 
 
-class ChatSessionMessageService:
+class SessionMessageService:
     @staticmethod
-    async def add(sessionMessage: ChatSessionMessageModel, db: AsyncSession) -> ChatSessionMessageModel:
-        db_session_message: ChatSessionMessageDBModel = sessionMessage.to_orm[ChatSessionMessageDBModel](
+    async def add(sessionMessage: SessionMessageModel, db: AsyncSession) -> SessionMessageModel:
+        db_session_message: SessionMessageDBModel = sessionMessage.to_orm[SessionMessageDBModel](
         )
         db.add(db_session_message)
 
@@ -20,9 +20,9 @@ class ChatSessionMessageService:
         return sessionMessage
 
     @staticmethod
-    async def list(sessionId: UUID, db: AsyncSession, pagination: Optional[PaginationModel]) -> [ChatSessionMessageDBModel]:
-        query = select(ChatSessionMessageDBModel).where(
-            and_(ChatSessionMessageDBModel.session_id == sessionId))
+    async def list(sessionId: UUID, db: AsyncSession, pagination: Optional[PaginationModel]) -> [SessionMessageDBModel]:
+        query = select(SessionMessageDBModel).where(
+            and_(SessionMessageDBModel.session_id == sessionId))
 
         if pagination:
             query = query.limit(pagination.page_size).offset(
@@ -33,9 +33,9 @@ class ChatSessionMessageService:
         return sessionMessages
 
     @staticmethod
-    async def update(id: UUID, db: AsyncSession, new_text: str) -> ChatSessionMessageDBModel:
-        query = select(ChatSessionMessageDBModel).where(
-            ChatSessionMessageDBModel.id == id)
+    async def update(id: UUID, db: AsyncSession, new_text: str) -> SessionMessageDBModel:
+        query = select(SessionMessageDBModel).where(
+            SessionMessageDBModel.id == id)
         result = await db.execute(query)
         sessionMessage = result.scalars().first()
         sessionMessage.message = new_text
