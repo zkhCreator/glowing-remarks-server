@@ -26,20 +26,19 @@ class SessionService:
     async def create(chat_session: SessionCreateModel, db: AsyncSession) -> SessionReadModel:
         db_chat_session: SessionDBModel = chat_session.to_orm()
 
-        print(vars(db_chat_session))
         db.add(db_chat_session)
 
         await db.commit()
         await db.refresh(db_chat_session)
-        print(vars(db_chat_session))
         return SessionReadModel.from_orm(db_chat_session)
 
     @staticmethod
     async def delete(session: SessionDeleteModel, user_id: UUID, db: AsyncSession):
+        print(vars(session))
+        print(user_id)
         try:
             result = await db.execute(select(SessionDBModel)
                                       .where(and_(SessionDBModel.id == session.id,
-                                                  SessionDBModel.user_id == session.user_id,
                                                   SessionDBModel.is_delete == False,
                                                   SessionDBModel.type == session.type,
                                                   SessionDBModel.user_id == user_id)))

@@ -13,7 +13,6 @@ class SessionType(Enum):
     def __str__(self) -> str:
         return self.name
 
-
 class SessionCreateModel(CommonBaseModel):
     user_id: UUID
     # chat 对话形式, data 数据列表的形式
@@ -33,5 +32,7 @@ class SessionModel(SessionReadModel):
     is_delete: bool = False
 
 
-class SessionDeleteModel(SessionReadModel):
-    pass
+class SessionDeleteModel(CommonBaseModel):
+    id: UUID
+    # chat 对话形式, data 数据列表的形式
+    type: str
