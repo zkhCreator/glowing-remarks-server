@@ -1,6 +1,8 @@
+from typing import Optional
 from uuid import UUID
 from sqlalchemy import Result, and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import NoResultFound
 
 from chat.session.db_model import ChatSessionDBModel
 from common.pagination import PaginationListResponse, PaginationModel
@@ -9,11 +11,14 @@ from .model import ChatSessionModel
 
 class ChatSessionService:
     @staticmethod
-    async def get(id: UUID, userId: UUID, db: AsyncSession) -> ChatSessionModel:
+    async def get(id: UUID, userId: UUID, db: AsyncSession) -> Optional[ChatSessionModel]:
         result = await db.execute(select(ChatSessionDBModel).where(and_(ChatSessionDBModel.id == id, ChatSessionDBModel.user_id == userId)))
 
         chat_session_exist = result.scalars().first()
+        if (chat_session_exist is None):
+            return None
         chat_session_model = ChatSessionModel.from_orm(chat_session_exist)
+        # .from_orm(chat_session_exist)
 
         return chat_session_model
 
@@ -42,7 +47,7 @@ class ChatSessionService:
 
     @staticmethod
     async def create(chat_session: ChatSessionModel, db: AsyncSession) -> ChatSessionModel:
-        db_chat_session: ChatSessionDBModel = chat_session.to_orm[ChatSessionDBModel](
+        db_chat_session: ChatSessionDBModel = chat_session.to_orm(
         )
         db.add(db_chat_session)
 

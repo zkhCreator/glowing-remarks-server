@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, FastAPI
 from common.database import on_startup
-from assistant.route import router as assistant_router
+from chat.route import router as chat_router
 from auth.route import router as auth_router
 import uvicorn
 
@@ -14,12 +14,14 @@ app = FastAPI()
 
 app.add_event_handler("startup", on_startup)
 
-app.include_router(assistant_router)
+app.include_router(chat_router)
 app.include_router(auth_router)
+
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
 
 if __name__ == "__main__":
     uvicorn.run(
@@ -29,4 +31,3 @@ if __name__ == "__main__":
         reload=True,
         log_level="debug"
     )
-

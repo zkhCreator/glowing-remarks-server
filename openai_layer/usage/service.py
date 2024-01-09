@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
 
 
-class UsageService:    
+class UsageService:
     @staticmethod
     async def addUsage(usage: UserUsageTokenModel, db: AsyncSession):
         db_usage: UserUsageTokenDBModel = usage.to_orm[UserUsageTokenDBModel]()
@@ -34,6 +34,5 @@ class UsageService:
         )
 
         user_usage_exist = result.fetchall()
-        user_usage_models = [UserUsageTokenModel.from_orm(
-            item) for item in user_usage_exist]
+        user_usage_models = UserUsageTokenModel.from_orm_list(user_usage_exist)
         return user_usage_models
