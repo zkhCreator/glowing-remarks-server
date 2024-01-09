@@ -27,3 +27,7 @@ class EditableBaseModel(CommonBaseModel):
         default_factory=datetime.utcnow, alias='create_time', read_only=True)
     update_time: datetime = Field(
         default_factory=datetime.utcnow, alias='update_time', read_only=True)
+
+
+class DeletableBaseModel(EditableBaseModel):
+    is_delete: bool = Field(default=False, alias='is_delete', read_only=True)

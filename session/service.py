@@ -8,6 +8,9 @@ from .db_model import SessionDBModel
 from common.pagination import PaginationListResponse, PaginationModel
 from .model import SessionCreateModel, SessionDeleteModel, SessionReadModel
 
+from .session_message.service import SessionMessageService
+from .session_message.model import SessionMessageModel
+
 
 class SessionService:
     @staticmethod
@@ -55,24 +58,23 @@ class SessionService:
             return None
 
     @staticmethod
-    async def list(userId: UUID, db: AsyncSession, pagination: PaginationModel) -> [SessionReadModel]:
-        # Query for the ids of the UserAssistant objects
-        result = await db.execute(select(SessionDBModel.assistant_id).where(SessionDBModel.user_id == userId))
-        user_assistant_ids = result.scalars().all()
+    async def messageList(session_id: UUID, db: AsyncSession, pagination: Optional[PaginationModel] = None):
 
-        stmt = select(SessionDBModel).where(SessionDBModel.id.in_(user_assistant_ids)).order_by(desc(
-            SessionDBModel.update_time)).limit(pagination.page_size).offset((pagination.page_num) * pagination.page_size)
+        query = select(SessionMessageModel).where(
+            SessionMessageModel.session_id == session_id)
 
-        assistant_result = await db.execute(stmt)
-        assistants = assistant_result.scalars().all()
+        if pagination is not None:
+            query = pagination.paginate(query)
 
-        # Count the total number of assistants for the user
-        total_result: Result = await db.execute(select(func.count()).where(SessionDBModel.user_id == userId))
-        total = total_result.scalar_one()
+        result = await db.execute(query)
+        session_message_list = result.scalars().all()
 
-        return PaginationListResponse[SessionReadModel](
-            total=total,
-            page_num=pagination.page_num,
-            page_size=pagination.page_size,
-            data=assistants
-        )
+        return [SessionMessageModel.from_orm(session_message) for session_message in session_message_list]
+
+    @staticmethod
+    async def appendMessage(session_id: UUID, message: str, role: str, db: AsyncSession):
+        # 调用 Message 的 服务处理
+        session_message = SessionMessageModel(
+            session_id=session_id, message=message, role=role)
+        saved_message = await SessionMessageService.add(session_message, db)
+        return saved_message

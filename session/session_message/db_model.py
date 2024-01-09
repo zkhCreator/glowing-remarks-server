@@ -9,5 +9,5 @@ class SessionMessageDBModel(BaseDBModel):
     __tablename__ = 'session_message'
 
     session_id = Column(UUIDType(binary=False), index=True)
-    role = Column(Column(String(255), nullable=False))
+    role = Column(String(255), nullable=False)
     message = Column(TEXT, nullable=False)

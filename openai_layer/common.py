@@ -1,10 +1,10 @@
 
 from openai import AsyncOpenAI
 
-from common.setting import Settings
+from common.setting import settings
 
 client = AsyncOpenAI(
     # Defaults to os.environ.get("OPENAI_API_KEY")
     # Otherwise use: api_key="Your_API_Key",
-    api_key=Settings.OPENAI_API_KEY
+    api_key=settings.OPENAI_API_KEY
 )
