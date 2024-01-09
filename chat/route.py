@@ -17,7 +17,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 async def completion(message: SendMessageModel, user_id: UUID = Depends(current_active_user_id), db: AsyncSession = Depends(get_async_session)):
     session_id = message.session_id
     message = message.message
-    return ChatService.sendMessage(session_id, message, user_id, db)
+    return await ChatService.sendMessage(session_id, message, user_id, db)
 
 
 @router.delete("/delete", description="删除某一个 session")

@@ -11,6 +11,7 @@ from openai.types.chat.chat_completion_message_param import ChatCompletionMessag
 from openai.types.chat.chat_completion_message_param import ChatCompletionUserMessageParam
 from openai.types.chat.chat_completion import ChatCompletion
 from openai.types.beta.thread import Thread
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class OpenAIService():
@@ -63,9 +64,13 @@ class OpenAIService():
     #     return response.data
 
     @staticmethod
-    async def chat_completion(user_id: UUID, messages: List[ChatCompletionMessageParam], max_tokens: int = 4096, model_name: Union[
-        str,
-        Literal[
+    async def chat_completion(db: AsyncSession,
+                              user_id: UUID,
+                              messages: List[ChatCompletionMessageParam],
+                              max_tokens: int = 4096,
+                              model_name: Union[
+                                  str,
+                                  Literal[
             "gpt-4-1106-preview",
             "gpt-4-vision-preview",
             "gpt-4",
@@ -80,29 +85,32 @@ class OpenAIService():
             "gpt-3.5-turbo-0613",
             "gpt-3.5-turbo-1106",
             "gpt-3.5-turbo-16k-0613",
-        ],
-    ] = "gpt-3.5-turbo-1106", ) -> ChatCompletion:
-
+                                      ],
+                              ] = "gpt-3.5-turbo-1106") -> ChatCompletion:
         response = await client.chat.completions.create(
             model=model_name,
             max_tokens=max_tokens,
             messages=messages,
+            stream=False
         )
-
-        if not messages or not isinstance(messages[-1], ChatCompletionUserMessageParam):
-            raise ValueError("The last message is not a user message")
 
         if not response.choices:
             raise ValueError("response_message is empty")
+        print("is ok here?")
+        request_token_model: UsageTokenModel = UsageTokenModel(
+            "send content", response.usage.prompt_tokens)
+        response_token_model: UsageTokenModel = UsageTokenModel(
+            response.choices[0].message.content, response.usage.completion_tokens)
 
-        request_token_model: UsageTokenModel = UsageUtils.tokenFromModel(
-            messages[-1], model_name)
-        response_token_model: UsageTokenModel = UsageUtils.tokenFromModel(
-            response, model_name)
+        dict_value = {
+            "user_id": user_id,
+            "request_message": request_token_model.content,
+            "request_token": request_token_model.token,
+            "response_message": response_token_model.content,
+            "response_token": response_token_model.token
+        }
+        usage = UserUsageTokenModel(**dict_value)
 
-        usage = UserUsageTokenModel(
-            user_id, request_message=request_token_model.content, request_token=request_token_model.token, response_message=response_token_model.content, response_token=response_token_model.token)
-
-        UsageService.addUsage(usage)
+        UsageService.addUsage(usage, db=db)
 
         return response

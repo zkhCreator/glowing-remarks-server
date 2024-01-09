@@ -8,6 +8,7 @@ from .db_model import UserUsageTokenDBModel
 class UsageTokenModel():
     content: str
     token: int
+    
 class UserUsageTokenModel(CommonBaseModel):
     user_id: UUID
     request_message: str

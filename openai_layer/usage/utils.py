@@ -13,7 +13,12 @@ class UsageUtils:
         return value
 
     @staticmethod
-    def tokenFromModel(message: ChatCompletionMessageParam, model_name: Optional[str], token: Optional[int]) -> UsageTokenModel:
+    async def messageTokenModel(message: str, model_name: Optional[str]) -> UsageTokenModel:
+        token = UsageUtils.token(message=message, model_name=model_name)
+        return UsageTokenModel(message, token)
+
+    @staticmethod
+    def tokenFromModel(message: ChatCompletionMessageParam, model_name: Optional[str], token: Optional[int] = None) -> UsageTokenModel:
         if isinstance(message, ChatCompletionToolMessageParam):
             return UsageUtils.tokenFromToolModel(message, model_name, token)
         elif isinstance(message, ChatCompletionSystemMessageParam):

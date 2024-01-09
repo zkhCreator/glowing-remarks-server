@@ -26,11 +26,14 @@ class ChatService:
         return session
 
     @staticmethod
-    async def _sendMessage(session: SessionReadModel, originMessageList: List[ChatCompletionMessageParam], message: str):
-        newMessageList = originMessageList.append(
-            [{"role": "user", "content": message}])
-        completion = OpenAIService.chat_completion(
-            user_id=session.user_id, messages=newMessageList)
+    async def _sendMessage(session: SessionReadModel,
+                           originMessageList: List[ChatCompletionMessageParam],
+                           message: str,
+                           db: AsyncSession):
+        originMessageList.append(
+            {"role": "user", "content": message})
+        completion = await OpenAIService.chat_completion(
+            user_id=session.user_id, messages=originMessageList, db=db)
 
         return completion
 
@@ -42,7 +45,9 @@ class ChatService:
     @staticmethod
     async def sendMessage(session_id: UUID, message: str, user_id: UUID, db: AsyncSession):
         session = await ChatService._getSession(session_id, user_id, db)
-        response = ChatService._sendMessage(session, message)
-        ChatService._saveMessage(session, message, response, db)
+        # TODO: send Message 保存内容
+        response = await ChatService._sendMessage(
+            session, originMessageList=[], message=message, db=db)
+        await ChatService._saveMessage(session, message, response, db)
 
-        return {"status": response}
+        return {"status": session}
